@@ -1,5 +1,7 @@
 on: [push]
 
+name: Build & Test
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,6 +11,17 @@ jobs:
         with:
           node-version: '14'
       - run: |
-          npm install
+          npm ci
           npm run build
-          ls -lah
+  test:
+    runs-on: unbuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v4.x.x # use the explicit version number
+        with:
+          build: npm run build
+          start: npm run start
